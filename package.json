@@ -1,0 +1,30 @@
+{
+  "name": "vite-project",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fullcalendar/core": "^6.1.10",
+    "@fullcalendar/daygrid": "^6.1.10",
+    "@popperjs/core": "^2.11.8",
+    "@zhengxs/calendar-data": "^0.1.0-rc.2",
+    "dayjs": "^1.11.10",
+    "element-plus": "^2.4.3",
+    "power-assert": "^1.6.1",
+    "rxjs": "^7.8.1",
+    "v-calendar": "^3.1.2",
+    "vue": "^3.3.4",
+    "wc-waterfall": "^0.0.7"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.2.3",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5",
+    "vue-tsc": "^1.8.5"
+  }
+}
