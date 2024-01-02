@@ -255,7 +255,7 @@
         return rowNum
     }
 
-    // 或者当前可见的年月,根据 scroll 和行列数量计算得出
+    // 或者当前可见的年月,根据 scroll 和行列数量计算得出的
     function getCurrentMonth(): {year:number, month:number} {
         const rowNum = getRowNum()   // 目前有多少行
         // 当前在第几行
