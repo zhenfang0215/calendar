@@ -234,6 +234,7 @@
         element.scrollTop = rowHeight  * 5 * 1.0 + 5; // day 单元格上下有 0.5 的 border width
     }
     
+
     function GetRowHeight() {
         const items = document.getElementsByClassName("item");
         if (items.length === 0) {
@@ -254,7 +255,7 @@
         return rowNum
     }
 
-    // 根据 scroll 判断当前月份
+    // 或者当前可见的年月,根据 scroll 和行列数量计算得出
     function getCurrentMonth(): {year:number, month:number} {
         const rowNum = getRowNum()   // 目前有多少行
         // 当前在第几行
