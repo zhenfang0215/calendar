@@ -6,6 +6,11 @@
                     {{ theDay.weekNum }}
                 </template>
             </div>
+            <template v-if="theDay.date == 1">  <!--每个月第一天-->
+                <div class="monthPrompt">
+                    {{theDay.year}}-{{theDay.month}}
+                </div>
+            </template>
             <div :class="toDayClass">
                 <!-- {{theDay.year}}-{{theDay.month}}-{{ theDay.date }} -->
                 {{theDay.month}}-{{ theDay.date }}
@@ -60,6 +65,12 @@
     color: white;
     font-weight: bold;
     line-height: 26px;
+}
+
+.monthPrompt {
+    position: sticky;
+    left: 0px;
+    background-color:aqua ;
 }
 
 </style>
