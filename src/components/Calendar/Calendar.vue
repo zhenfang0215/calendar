@@ -39,12 +39,8 @@
             </template>
         </div>
         <div class="cal-container" id="caloverflow">
-            <template v-for="fullDate in fullDates">
-                <template v-for="week in fullDate?.weeks">
-                    <template v-for="day in week.days">
-                        <calendarDay :theDay="day" />
-                    </template>
-                </template>
+            <template v-for="day in fullDates">
+                <calendarDay :theDay="day" />
             </template>
         </div>
     </div>
@@ -100,7 +96,7 @@
         // doc.addEventListener('mousewheel', ScrollHandle,false)
 
         const clicks = fromEvent(doc, 'mousewheel')
-        const result = clicks.pipe(throttleTime(500))
+        const result = clicks.pipe(throttleTime(400))
         result.subscribe(ScrollHandle);
     })
 
@@ -128,20 +124,26 @@
             const result = element.scrollHeight - element.clientHeight - element.scrollTop <= element.clientHeight * 0.8;
             //console.log("ScrollHandle", result, element.scrollHeight,element.scrollTop,  element.clientHeight, Math.round(element.clientHeight * 0.8), element.scrollHeight - element.scrollTop - element.clientHeight)
             if (result) {
-                nextMonth()
+                const max = getMaxDate()
+                const next = calendar.getNextMonthCalendarByDate(max)
+                console.log("xia", max, next)
+                fullDates.value.push(...next)
                 RefreshRowNumToCss()
             }
         }else{
             // 向上
-            const result = element.scrollTop <= element.clientHeight * 0.45;
+            const result = element.scrollTop <= element.clientHeight * 0.3;
             // console.log("ScrollHandle", result, element.scrollHeight,  element.clientHeight, element.scrollTop,  element.scrollHeight - element.scrollTop - element.clientHeight, (element.scrollHeight - element.clientHeight))
             if (result) {
-                preMonth()
+                const min = getMinDate()
+                const pre = calendar.getPreviousMonthCalendarByDate(min)
+                console.log("shang", min, pre)
+                fullDates.value.unshift(...pre)
                 RefreshRowNumToCss()
                 const preTop = element.scrollTop
                 nextTick(() => {
                     const rowHeight = GetRowHeight()
-                    element.scrollTop += (6 * rowHeight + preTop)
+                    element.scrollTop += (5 * rowHeight + preTop)
                 });
             }
         }
@@ -152,15 +154,16 @@
         return element
     }
 
-
     function clickAction(f: Function) {
         fullDates.value = []
         f()
-        const pre = calendar.getPreviousMonthCalendar(theYear.value, theMonth.value)
-        fullDates.value.unshift(pre);
-        const next = calendar.getNextMonthCalendar(theYear.value, theMonth.value)
-        fullDates.value.push(next)
-        console.log("RefreshFullDates", fullDates.value)
+        const min = getMinDate()
+        const pre = calendar.getPreviousMonthCalendarByDate(min)
+        fullDates.value.unshift(...pre);
+        const max = getMaxDate()
+        const next = calendar.getNextMonthCalendarByDate(max)
+        fullDates.value.push(...next)
+        // console.log("RefreshFullDates", fullDates.value)
         // 刷新 css
         RefreshRowNumToCss()
         // nextTick: 确保在元素渲染完成后再执行一个函数
@@ -169,11 +172,25 @@
         });
     }
 
+    function getMinDate() {
+        const min = fullDates.value[0]
+        console.log("min", min)
+        return min
+    }
+
+    function getMaxDate() {
+        const max = fullDates.value[fullDates.value.length-1]
+        console.log("max", max)
+        return max
+    }
+
+
     // 追加上一个月
     function preMonth() {
-        const pre = calendar.getPreviousMonthCalendar(theYear.value, theMonth.value)
-        fullDates.value.unshift(pre);
-        console.log("preMonth", theYear.value, theMonth.value)
+        const min = getMinDate()
+        const pre = calendar.getPreviousMonthCalendar(min.year, min.month)
+        fullDates.value.unshift(...pre);
+        console.log("preMonth", min.value, min.value)
         theYear.value = pre.yearNum
         theMonth.value = pre.monthNum
     }
@@ -184,25 +201,24 @@
         theYear.value = now.getFullYear()
         theMonth.value = now.getMonth() + 1
         const result = calendar.getMonthCalendar(theYear.value, theMonth.value)
-        fullDates.value.push(result)
-        console.log(theYear.value, theMonth.value)
+        fullDates.value.push(...result)
+        console.log("now", theYear.value, theMonth.value)
     }
     
     // 追加下一个月
     function nextMonth() {
-        const next = calendar.getNextMonthCalendar(theYear.value, theMonth.value)
-        fullDates.value.push(next)
-        console.log("nextMonth", theYear.value, theMonth.value)
+        const max = getMaxDate()
+        const next = calendar.getNextMonthCalendar(max.year, max.month)
+        fullDates.value.push(...next)
+        console.log("nextMonth", max.value, max.value)
         theYear.value = next.yearNum
         theMonth.value = next.monthNum
     }
-
  
     // 刷新 grid 的参数
     function RefreshRowNumToCss() {
         const element = getCalContainer();
-        console.log("Number of months:", fullDates.value.length)
-        element.style.setProperty('--row-num', fullDates.value.length * windowRow);
+        element.style.setProperty('--row-num', getRowNum());
     }
 
     // 设置滚动条位置在三个月中间的一个月
@@ -211,7 +227,7 @@
         // console.log("ScrollFixedAtMiddle roweHeight", rowHeight)
         const element = getCalContainer();
         // console.log("ScrollFixedAtMiddle scrollTop", rowHeight  * 1.0 * windowRow)
-        element.scrollTop = rowHeight  * windowRow * 1.0 + windowRow; // day 单元格上下有 0.5 的 border width
+        element.scrollTop = rowHeight  * 5 * 1.0 + 5; // day 单元格上下有 0.5 的 border width
     }
     
     function GetRowHeight() {
@@ -226,6 +242,12 @@
         const heightInPixels = parseFloat(itemHeight, 10);
         // console.log("item heightInPixels:", heightInPixels)
         return heightInPixels
+    }
+
+    function getRowNum() {
+        const rowNum = fullDates.value.length / windowColumn
+        console.log("Number of months:", rowNum)
+        return rowNum
     }
     
     </script>
@@ -364,7 +386,7 @@
 
     overflow: scroll;
 } 
-.cal-container::-webkit-scrollbar { display: none;  }
+/* .cal-container::-webkit-scrollbar { display: none;  } */
 
 
 .weeks {

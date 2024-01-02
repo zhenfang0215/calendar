@@ -7,7 +7,9 @@
                 </template>
             </div>
             <div :class="toDayClass">
-                {{ theDay.date }}
+                <!-- {{theDay.year}}-{{theDay.month}}-{{ theDay.date }} -->
+                {{theDay.month}}-{{ theDay.date }}
+                <!-- {{theDay.date}} -->
             </div>
             <div class="top_right">
                 日

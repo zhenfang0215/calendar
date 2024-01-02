@@ -27,8 +27,9 @@ export interface IterateeContext extends Omit<DateObj, 'date'> {
 }
 
 export interface ReturnObj<T>  extends Cell {
-    weekNum: number
-    weekIndex: number
+    weekNum: number  // 一年中的第几周
+    weekInMonth: number // 一个月中的第几周
+    weekIndex: number 
 }
 
 export interface WeekObj<T> {
@@ -162,9 +163,8 @@ export class Calendar<T> {
    *
    * @return 二维数组结构的日期列表
    */
-  getMonthCalendar(year: number, month: number): YearObj<T> {
-    const calendar: T[][] = []
-    const iteratee = this.iteratee
+  getMonthCalendar(year: number, month: number): ReturnObj<T>[] {
+    const calendar: ReturnObj<T>[] = []
     const count = this.visibleWeeksCount * 7
 
     const now = new Date()
@@ -175,21 +175,13 @@ export class Calendar<T> {
       date: now.getDate()
     }
 
-    const calendar2: MonthObj<T> = {
-        yearNum: year,
-        monthNum: month,
-        weeks: []
-    }
-    let week2:WeekObj<T>
     let weekNum:number = 0
+    let weekInMonth: number = 0
     this.unstable_iterDates(year, month, 1, count, true, (dateObj, i) => {
         // 七天一周,每七天初始化一次
         if (!(i % 7)) {
             weekNum = this.getCurrentWeekOfYear(dateObj)
-            week2 = calendar2.weeks[i / 7] = {
-                weekNum: weekNum,
-                days: []
-            }   // Both of them are changed at the same time
+            weekInMonth++
         }
 
         const curYear = dateObj.getFullYear()
@@ -202,16 +194,17 @@ export class Calendar<T> {
         const { inMonth } = compare(curYear, curMonth, nowObj.year, nowObj.month)
         const item = {
             ...result,
-            year: year,
-            month: month,
+            year: curYear,
+            month: curMonth,
             date: curDate,
             isToday: inMonth && curDate === nowObj.date,
             weekNum: weekNum,
+            weekInMonth: weekInMonth,
             weekIndex: dateObj.getDay(),
         }
-        week2.days.push(item)
+        calendar.push(item)
     })
-    return calendar2
+    return calendar
   }
 
   /**
@@ -227,28 +220,46 @@ export class Calendar<T> {
     return currentWeekOfYear;
   }
 
-  /**
-   * 获取上个月日历数据
-   *
-   * @param year 年
-   * @param month 月
-   *
-   * @return 二维数组结构的日期列表
-   */
-  getPreviousMonthCalendar(year: number, month: number): T[][] {
-    return this.getMonthCalendar(...getPreviousMonth(year, month))
+  getPreviousMonthCalendar(year: number, month: number): ReturnObj<T>[] {
+    const pre =  this.getMonthCalendar(...getPreviousMonth(year, month))
+    // pre.weeks.pop()
+    return pre
   }
 
-  /**
-   * 获取下个月日历数据
-   *
-   * @param year 年
-   * @param month 月
-   *
-   * @return 二维数组结构的日期列表
-   */
-  getNextMonthCalendar(year: number, month: number): T[][] {
-    return this.getMonthCalendar(...getNextMonth(year, month))
+  getPreviousMonthCalendarByDate(day: ReturnObj<T>): ReturnObj<T>[] {
+    const next = this.getMonthCalendar(day.year, day.month)
+    // 删除下一周重复的天数
+    let point: number = 0
+    for (let index = 0; index < next.length; index++) {
+        const theOne = next[index]
+        if (theOne.year === day.year && theOne.month === day.month && theOne.date === day.date) {
+            point = index
+            break
+        }
+    }
+    const newList: ReturnObj<T>[] = next.slice(0, point)
+    return newList
+  }
+
+  getNextMonthCalendar(year: number, month: number): ReturnObj<T>[] {
+    const next = this.getMonthCalendar(...getNextMonth(year, month))
+    // next.weeks.shift()
+    return next
+  }
+
+  getNextMonthCalendarByDate(day: ReturnObj<T>): ReturnObj<T>[] {
+    const next = this.getMonthCalendar(day.year, day.month)
+    // 删除上一周重复的天数
+    let point: number = 0
+    for (let index = 0; index < next.length; index++) {
+        const theOne = next[index]
+        if (theOne.year === day.year && theOne.month === day.month && theOne.date === day.date) {
+            point = index
+            break
+        }
+    }
+    const newList: ReturnObj<T>[] = next.slice(point+1)
+    return newList
   }
 
   /**
