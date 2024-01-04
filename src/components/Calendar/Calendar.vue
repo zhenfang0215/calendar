@@ -119,34 +119,34 @@
     function ScrollHandle(event) {
         var d = event.deltaY>0?'down':'up'
         const element = getCalContainer()
-        // if (d === 'down') {
-        //     // 向下
-        //     const result = element.scrollHeight - element.clientHeight - element.scrollTop <= element.clientHeight * 0.8;
-        //     //console.log("ScrollHandle", result, element.scrollHeight,element.scrollTop,  element.clientHeight, Math.round(element.clientHeight * 0.8), element.scrollHeight - element.scrollTop - element.clientHeight)
-        //     if (result) {
-        //         const max = getMaxDate()
-        //         const next = calendar.getNextMonthCalendarByDate(max)
-        //         console.log("xia", max, next)
-        //         fullDates.value.push(...next)
-        //         RefreshRowNumToCss()
-        //     }
-        // }else{
-        //     // 向上
-        //     const result = element.scrollTop <= element.clientHeight * 0.3;
-        //     // console.log("ScrollHandle", result, element.scrollHeight,  element.clientHeight, element.scrollTop,  element.scrollHeight - element.scrollTop - element.clientHeight, (element.scrollHeight - element.clientHeight))
-        //     if (result) {
-        //         const min = getMinDate()
-        //         const pre = calendar.getPreviousMonthCalendarByDate(min)
-        //         console.log("shang", min, pre)
-        //         fullDates.value.unshift(...pre)
-        //         RefreshRowNumToCss()
-        //         const preTop = element.scrollTop
-        //         nextTick(() => {
-        //             const rowHeight = GetRowHeight()
-        //             element.scrollTop += (5 * rowHeight + preTop)
-        //         });
-        //     }
-        // }
+        if (d === 'down') {
+            // 向下
+            const result = element.scrollHeight - element.clientHeight - element.scrollTop <= element.clientHeight * 0.8;
+            //console.log("ScrollHandle", result, element.scrollHeight,element.scrollTop,  element.clientHeight, Math.round(element.clientHeight * 0.8), element.scrollHeight - element.scrollTop - element.clientHeight)
+            if (result) {
+                const max = getMaxDate()
+                const next = calendar.getNextMonthCalendarByDate(max)
+                console.log("xia", max, next)
+                fullDates.value.push(...next)
+                RefreshRowNumToCss()
+            }
+        }else{
+            // 向上
+            const result = element.scrollTop <= element.clientHeight * 0.3;
+            // console.log("ScrollHandle", result, element.scrollHeight,  element.clientHeight, element.scrollTop,  element.scrollHeight - element.scrollTop - element.clientHeight, (element.scrollHeight - element.clientHeight))
+            if (result) {
+                const min = getMinDate()
+                const pre = calendar.getPreviousMonthCalendarByDate(min)
+                console.log("shang", min, pre)
+                fullDates.value.unshift(...pre)
+                RefreshRowNumToCss()
+                const preTop = element.scrollTop
+                nextTick(() => {
+                    const rowHeight = GetRowHeight()
+                    element.scrollTop += (5 * rowHeight + preTop)
+                });
+            }
+        }
         const {year, month} = getCurrentMonth()
         theYear.value = year
         theMonth.value = month
