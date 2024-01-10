@@ -5,10 +5,10 @@
                 <input type="button" value="+">
             </div>
             <div class="switch_view_type">
-                <button class="monthly">日</button>
-                <button class="monthly">周</button>
-                <button class="monthly">月</button>
-                <button class="monthly">年</button>
+                <button class="monthly" @click="selectDisplayModel('dairly')">日</button>
+                <button class="monthly" @click="selectDisplayModel('weekly')">周</button>
+                <button class="monthly" @click="selectDisplayModel('monthly')">月</button>
+                <button class="monthly" @click="selectDisplayModel('yearly')">年</button>
             </div>
             <div class="search">
                 <el-input
@@ -19,29 +19,36 @@
                     />
             </div>
         </div>
-        <div class="left_header">
-            <div class="show-date">
-               <p>{{theYear}}年{{theMonth}}日</p>
-            </div>
-            <div class="operator">
-                <el-button-group>
-                    <el-button size="small" class="side buttion-size" @click="ClickPre" :icon="ArrowLeft"/>
-                    <el-button size="small" class="now buttion-size" @click="ClickNow">今天</el-button>
-                    <el-button size="small" class="side buttion-size" @click="ClickNext" :icon="ArrowRight"/>
-                </el-button-group>
-            </div>
-        </div>
-        <div class="weeks">
-            <template v-for="theWeek in theWeeks">
-                <div class="week-item">
-                    <p>{{ theWeek.short }}</p>
+        
+        <div :class="monthlySelectStyle">
+            <div class="left_header">
+                <div class="show-date">
+                <p>{{theYear}}年{{theMonth}}日</p>
                 </div>
-            </template>
+                <div class="operator">
+                    <el-button-group>
+                        <el-button size="small" class="side buttion-size" @click="ClickPre" :icon="ArrowLeft"/>
+                        <el-button size="small" class="now buttion-size" @click="ClickNow">今天</el-button>
+                        <el-button size="small" class="side buttion-size" @click="ClickNext" :icon="ArrowRight"/>
+                    </el-button-group>
+                </div>
+            </div>
+            <div class="weeks">
+                <template v-for="theWeek in theWeeks">
+                    <div class="week-item">
+                        <p>{{ theWeek.short }}</p>
+                    </div>
+                </template>
+            </div>
+            <div class="cal-container" id="caloverflow">
+                <template v-for="day in fullDates">
+                    <calendarDay :theDay="day" />
+                </template>
+            </div>
         </div>
-        <div class="cal-container" id="caloverflow">
-            <template v-for="day in fullDates">
-                <calendarDay :theDay="day" />
-            </template>
+        
+        <div id="weekly-display" :class="weeklySelectStyle">
+            <weeklyCalendar></weeklyCalendar>
         </div>
     </div>
 </template>
@@ -61,9 +68,10 @@
       ArrowRight,
     } from '@element-plus/icons-vue'
     import { default as calendarDay } from "./CalendarDay.vue";
+    import { default as weeklyCalendar } from "./CalendarWeeklyView.vue"
     import { fromEvent,throttleTime } from 'rxjs';
 
-    
+
     const props = defineProps([
         'now_month'
     ])
@@ -270,7 +278,43 @@
         return {year:item.year, month:item.month}
     }
 
-    </script>
+    function selectDisplayModel(type:string) {
+        styleModelMap.value.monthly = true
+        styleModelMap.value.weekly = true
+        styleModelMap.value.yearly = true
+        styleModelMap.value.dairly = true
+        if (type === "monthly") {
+            styleModelMap.value.monthly = false
+        }else if (type === "dairly") {
+            styleModelMap.value.dairly = false
+        }else if (type === "weekly") {
+            styleModelMap.value.weekly = false
+        }else if (type === "yearly") {
+            styleModelMap.value.yearly = false
+        }
+        console.log("show type", type, styleModelMap.value)
+    }
+
+    const styleModelMap = ref({
+        monthly: false,
+        weekly: true,
+        yearly: true,
+        dairly: true,
+    })
+    const monthlySelectStyle = computed(() => ({
+        'display_none': styleModelMap.value.monthly,
+    }))
+    const weeklySelectStyle = computed(() => ({
+        'display_none': styleModelMap.value.weekly,
+    }))
+    const yearlySelectStyle = computed(() => ({
+        'display_none': styleModelMap.value.yearly,
+    }))
+    const diarlySelectStyle = computed(() => ({
+        'display_none': styleModelMap.value.dairly,
+    }))
+
+</script>
 
 <style>
 .b {
@@ -406,7 +450,7 @@
 
     overflow: scroll;
 } 
-/* .cal-container::-webkit-scrollbar { display: none;  } */
+.cal-container::-webkit-scrollbar { display: none;  }
 
 
 .weeks {
@@ -423,6 +467,10 @@
 .week-item p {
     margin: 0;
     padding-right: 5px;
+}
+
+.display_none {
+    display: none;
 }
 
 </style>

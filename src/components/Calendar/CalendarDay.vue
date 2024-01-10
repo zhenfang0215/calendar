@@ -79,7 +79,8 @@
 <script setup lang="ts">
 import {ref,computed, onMounted, defineProps} from 'vue'
 const props = defineProps([
-    'theDay'
+    'theDay',
+    'mode'
 ])
 
 const dayClassObject = computed(() => ({
