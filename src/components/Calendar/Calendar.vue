@@ -19,7 +19,8 @@
                     />
             </div>
         </div>
-        <div id="monthly-display" :class="monthlySelectStyle">
+        
+        <div :class="monthlySelectStyle">
             <div class="left_header">
                 <div class="show-date">
                 <p>{{theYear}}年{{theMonth}}日</p>
@@ -45,6 +46,7 @@
                 </template>
             </div>
         </div>
+        
         <div id="weekly-display" :class="weeklySelectStyle">
             <weeklyCalendar></weeklyCalendar>
         </div>
