@@ -20,7 +20,6 @@
             </div>
         </div>
         
-        
         <div class="left_header">
             <div class="show-date">
             <p>{{theYear}}年{{theMonth}}日</p>
@@ -33,6 +32,7 @@
                 </el-button-group>
             </div>
         </div>
+
         <div class="weeks" :class="monthlySelectStyle">
             <template v-for="theWeek in theWeeks">
                 <div class="week-item">
@@ -45,7 +45,6 @@
                 <calendarDay :theDay="day" />
             </template>
         </div>
-    
         
         <div id="weekly-display" :class="weeklySelectStyle">
             <weeklyCalendar></weeklyCalendar>
