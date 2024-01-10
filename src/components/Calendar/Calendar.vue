@@ -20,31 +20,30 @@
             </div>
         </div>
         
-        <div :class="monthlySelectStyle">
-            <div class="left_header">
-                <div class="show-date">
-                <p>{{theYear}}年{{theMonth}}日</p>
+        <div class="left_header">
+            <div class="show-date">
+            <p>{{theYear}}年{{theMonth}}日</p>
+            </div>
+            <div class="operator">
+                <el-button-group>
+                    <el-button size="small" class="side buttion-size" @click="ClickPre" :icon="ArrowLeft"/>
+                    <el-button size="small" class="now buttion-size" @click="ClickNow">今天</el-button>
+                    <el-button size="small" class="side buttion-size" @click="ClickNext" :icon="ArrowRight"/>
+                </el-button-group>
+            </div>
+        </div>
+
+        <div class="weeks" :class="monthlySelectStyle">
+            <template v-for="theWeek in theWeeks">
+                <div class="week-item">
+                    <p>{{ theWeek.short }}</p>
                 </div>
-                <div class="operator">
-                    <el-button-group>
-                        <el-button size="small" class="side buttion-size" @click="ClickPre" :icon="ArrowLeft"/>
-                        <el-button size="small" class="now buttion-size" @click="ClickNow">今天</el-button>
-                        <el-button size="small" class="side buttion-size" @click="ClickNext" :icon="ArrowRight"/>
-                    </el-button-group>
-                </div>
-            </div>
-            <div class="weeks">
-                <template v-for="theWeek in theWeeks">
-                    <div class="week-item">
-                        <p>{{ theWeek.short }}</p>
-                    </div>
-                </template>
-            </div>
-            <div class="cal-container" id="caloverflow">
-                <template v-for="day in fullDates">
-                    <calendarDay :theDay="day" />
-                </template>
-            </div>
+            </template>
+        </div>
+        <div class="cal-container" id="caloverflow" :class="monthlySelectStyle">
+            <template v-for="day in fullDates">
+                <calendarDay :theDay="day" />
+            </template>
         </div>
         
         <div id="weekly-display" :class="weeklySelectStyle">
