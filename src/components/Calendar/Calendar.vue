@@ -42,7 +42,7 @@
         </div>
         <div class="cal-container" id="caloverflow" :class="monthlySelectStyle">
             <template v-for="day in fullDates">
-                <calendarDay :theDay="day" />
+                <calendarDay :theDay="day" mode="daily"/>
             </template>
         </div>
         

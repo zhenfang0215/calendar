@@ -1,25 +1,54 @@
 <template>
     <div :class="dayClassObject">
-        <div class="content">
-            <div class="top_left">
-                <template v-if="theDay.weekIndex == 0">
-                    {{ theDay.weekNum }}
-                </template>
-            </div>
-            <template v-if="theDay.date == 1">  <!--每个月第一天-->
-                <div class="monthPrompt">
-                    {{theDay.year}}-{{theDay.month}}
+        <template v-if="mode == 'daily'">
+            <div :class="contentClassObject">
+                <div class="top_left">
+                    <template v-if="theDay.weekIndex == 0">
+                        {{ theDay.weekNum }}
+                    </template>
                 </div>
-            </template>
-            <div :class="toDayClass">
-                <!-- {{theDay.year}}-{{theDay.month}}-{{ theDay.date }} -->
-                {{theDay.month}}-{{ theDay.date }}
-                <!-- {{theDay.date}} -->
+                <template v-if="theDay.date == 1">  <!--每个月第一天-->
+                    <div class="monthPrompt">
+                        {{theDay.year}}-{{theDay.month}}
+                    </div>
+                </template>
+                <div :class="toDayClass">
+                    <!-- {{theDay.year}}-{{theDay.month}}-{{ theDay.date }} -->
+                    {{theDay.month}}-{{ theDay.date }}
+                    <!-- {{theDay.date}} -->
+                </div>
+                <div class="top_right">
+                    日
+                </div>
             </div>
-            <div class="top_right">
-                日
+        </template>
+        <template v-else-if="mode == 'weekly'">
+            <div :class="contentClassObject">
+                <div class="top_left">
+                    <template v-if="theDay.weekIndex == 0">
+                        {{ theDay.weekNum }}
+                    </template>
+                </div>
+                <template v-if="theDay.date == 1">  <!--每个月第一天-->
+                    <div class="monthPrompt">
+                        {{theDay.year}}-{{theDay.month}}
+                    </div>
+                </template>
+                <div :class="toDayClass">
+                    <!-- {{theDay.year}}-{{theDay.month}}-{{ theDay.date }} -->
+                    {{theDay.month + 1}}-{{ theDay.date }}
+                    <!-- {{theDay.date}} -->
+                </div>
+                <div class="top_right">
+                   <template v-if="theDay.week === 0">
+                     周日
+                   </template>
+                   <template v-else>
+                     周 {{ theDay.week }}
+                   </template>
+                </div>
             </div>
-        </div>
+        </template>
     </div>
 </template>
 
@@ -73,6 +102,14 @@
     background-color:aqua ;
 }
 
+/*  
+weekly view
+*/
+
+.week-content {
+    flex: 1;
+}
+
 </style>
 
 
@@ -87,7 +124,12 @@ const dayClassObject = computed(() => ({
     'block-size': true,
     'item': props.theDay.inMonth,
     'item-out': !props.theDay.inMonth,
-    'weekend': props.theDay.weekIndex == 0 || props.theDay.weekIndex == 6
+    'weekend': props.theDay.weekIndex == 0 || props.theDay.weekIndex == 6,
+    'week-content': props.mode === "weekly"
+}))
+
+const contentClassObject = computed(() => ({
+    'content': props.mode === "daily",
 }))
 
 const toDayClass = computed(() => ({

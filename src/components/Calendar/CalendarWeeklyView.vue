@@ -2,9 +2,14 @@
 <div class="weekly">
     <div class="week-container">
         <template v-for="day in weekDatas">
-            <calendarDay :theDay="day" />
+            <calendarDay :theDay="day" mode="weekly"/>
         </template>
     </div>
+    <template v-for="period in dayPeriods">
+        <div>
+            {{  period  }}
+        </div>
+    </template>
 </div>
 </template>
 
@@ -21,6 +26,9 @@
 import { CalendarWeekly } from '../../calendar/core/calendar-weekly.ts'
 import { default as calendarDay } from "./CalendarDay.vue";
 import { ref } from 'vue'
+import { getDayPeriod } from "./CalendarWeeklyView"
+
+let dayPeriods = getDayPeriod()
 
 let weekDatas = ref([])
 
