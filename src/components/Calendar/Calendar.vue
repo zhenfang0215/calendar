@@ -46,7 +46,7 @@
             </template>
         </div>
         
-        <div id="weekly-display" :class="weeklySelectStyle">
+        <div class="weekly-display" :class="weeklySelectStyle">
             <weeklyCalendar></weeklyCalendar>
         </div>
     </div>
@@ -433,7 +433,7 @@
     margin: 0;
 }
 
-.cal-container {
+.cal-container  {
     --row-num: 6;
 
     width: 100%;
@@ -451,7 +451,11 @@
 } 
 .cal-container::-webkit-scrollbar { display: none;  }
 
-
+.weekly-display {
+    --disply-all: calc(calc(100% - var(--container-header-total)) + 5%);
+    width: 100%;
+    height: var(--disply-all);
+}
 .weeks {
     width: 100%;
     height: var(--container-header-week);

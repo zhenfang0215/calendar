@@ -5,19 +5,44 @@
             <calendarDay :theDay="day" mode="weekly"/>
         </template>
     </div>
-    <template v-for="period in dayPeriods">
-        <div>
-            {{  period  }}
-        </div>
-    </template>
+    <div class="timeofday">
+        <template v-for="period in dayPeriods">
+            <div class="time">
+                {{  period  }}
+            </div>
+        </template>
+    </div>
 </div>
 </template>
 
 <style>
-.week-container {
-    display: flex;
+.weekly {
+    --week-head: 8%;
+    --timeofday-body: calc(100% - var(--week-head));
+    height: 100%;
 }
 
+.week-container {
+    display: flex;
+    height: var(--week-head);
+}
+
+
+
+.timeofday {
+    overflow: scroll;
+    height: var(--timeofday-body);
+}
+
+.time {
+    width: 100%;
+    height: 5%;
+    background-color: #FFFFFF;
+    text-align: left;
+    color: #BDBDBD;
+    font-size: 15px;
+    border: 1px solid #F7F7F7;
+}
 
 </style>
 
