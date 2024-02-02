@@ -8,6 +8,8 @@ export interface CDay {
     month: number  // 0-11
     date: number   // 1-31
     week: number   // 0-6, 0 is Sunday
+
+    isToday: boolean
 }
 
 
@@ -49,7 +51,11 @@ export class CalendarWeekly {
 
         const result: CDay[] = []
         for (let index = 0; index < 7; index++) {
-            result.push(this.getCDayFromDate(cursor))
+            let cursorCDay = this.getCDayFromDate(cursor)
+            if (this.isToday(cursorCDay)) {
+                cursorCDay.isToday = true
+            }
+            result.push(cursorCDay)
             cursor.setDate(cursor.getDate() + 1)
         }
         return result
@@ -101,6 +107,11 @@ export class CalendarWeekly {
             date: date.getDate(),
             week: date.getDay(),
         }
+    }
+
+    isToday(date: CDay): boolean {
+        let today = new Date()
+        return date.year == today.getFullYear() && date.month == today.getMonth() && date.date == today.getDate()
     }
 }
 
